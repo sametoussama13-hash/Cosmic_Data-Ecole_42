@@ -1,5 +1,5 @@
 """Test Pydantic validator."""
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from datetime import datetime
 
 
@@ -13,7 +13,7 @@ class SpaceStation(BaseModel):
     oxygen_level: float = Field(..., ge=0, le=100)
     last_maintenance: datetime
     is_operational: bool = True
-    notes: str | None = Field(default=True, max_length=200)
+    notes: str | None = Field(default=None, max_length=200)
 
 
 def main(data) -> None:
@@ -31,7 +31,7 @@ def main(data) -> None:
                        else "Not Operational")
         print(f"Status: {status}")
         print()
-    except ValueError as e:
+    except ValidationError as e:
         print("Expected validation error:")
         for error in e.errors():
             print(error["msg"])
